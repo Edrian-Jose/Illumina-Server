@@ -190,4 +190,14 @@ class Illumina
 
         return implode($decipheredChar);
     }
+
+    public static function IlluminaCipherCompare($left, $right)
+    {
+        $rawLeft = Illumina::IlluminaCipherDecrypt($left);
+        $rawRight = Illumina::IlluminaCipherDecrypt($right);
+        if ($rawLeft == $rawRight) {
+            return true;
+        }
+        return false;
+    }
 }

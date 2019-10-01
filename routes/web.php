@@ -22,8 +22,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('{key}/token', ['middleware' => ['checkgetquery', 'checkgettimeurl'], function ($key) {
-    echo csrf_token();
+Route::get('{key}/token', ['middleware' => 'checkgettimeurl', function ($key) {
+    return csrf_token();
 }]);
 
 
@@ -31,23 +31,24 @@ Route::get('/test', ['middleware' => ['checkgetquery'], function (Request $reque
     return $request->all();
 }]);
 
-Route::post('/user/login', function (Request $request) {
-    $user = User::where("username", $request["username"])->first();
 
-    if ($user == null) {
-        return "Username doesn't exist";
-    }
-
-    $password = $user->password;
-    if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
-        $user->logged_in = true;
-        $user->save();
-        return $user;
-        
-    } else {
-        return "Username/password incorrect";
-    }
-});
-
+Route::put('/user/login', 'UserController@login');
+Route::get('/user/exists/{key}', 'UserController@exists');
 
 Route::resource('user', 'UserController');
+
+Route::post('/test', function (Request $request) {
+    $request["response_message"] = "Hello";
+    return $request;
+});
+
+Route::get('/sendmail', function (Request $request) {
+    $data = [
+        'name' => 'Kei Cristobal',
+        'code' => 'dsWdg'
+    ];
+
+    Mail::send('emails.verify', $data, function ($message) {
+        $message->to('eejaydg@gmail.com', 'Elaine Olalo')->subject('Verify your email');
+    });
+});

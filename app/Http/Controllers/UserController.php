@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Middleware\Illumina;
+use App\Http\Middleware\CheckGetTimeUrl;
 
 use App\User;
 
@@ -17,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return csrf_token();
+        //
     }
 
     /**
@@ -40,8 +41,11 @@ class UserController extends Controller
     {
         if ($request->has("username") && $request->has("password") && $request->has("name") && $request->has("email")) {
             User::create($request->all());
+            $request["response_message"] = "You are now registered " . $request["name"];
+            return $request;
         } else {
-            return "Incomplete information, cannot register";
+            $request["response_message"] = "Incomplete information, cannot register";
+            return $request;
         }
     }
 
@@ -82,14 +86,47 @@ class UserController extends Controller
 
     public function login(Request $request)
     {
-        $user = User::where("username", request["username"]);
+        $user = User::where("username", $request["username"])->first();
+
+        if ($user == null) {
+            $request["response_message"] = "Username doesn't exist";
+        }
+
         $password = $user->password;
         if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
             $user->logged_in = true;
             $user->save();
+            return $user;
         } else {
-            return "Username/password incorrect";
+            $request["response_message"] = "Username/password incorrect";
         }
+
+        return $request;
+    }
+
+    public function exists(Request $request)
+    {
+        if (CheckGetTimeUrl::CheckUniqueKey($request)) {
+            $name = "username";
+            $value = "";
+            if ($request->has("username")) {
+                $name = "username";
+                $value = $request["username"];
+            }
+            if ($request->has("email")) {
+                $name = "email";
+                $value = $request["email"];
+            }
+            $user = User::where($name, $value)->first();
+            if ($user != null && $name == "username") {
+                return "Username already exist";
+            } else if ($user != null && $name == "email") {
+                return "Email already exist";
+            } else {
+                return "";
+            }
+        }
+        return redirect('/')->withException(InvalidArgumentException);
     }
 
     /**

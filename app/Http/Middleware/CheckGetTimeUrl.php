@@ -18,24 +18,26 @@ class CheckGetTimeUrl
 
 
 
-    public function handle($request, Closure $next)
+    public static function CheckUniqueKey($request)
     {
         $requestKey =  $request->key;
         $keys = [];
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $keys[$i] = Illumina::CreateUniqueDateTimeKey($i);
         }
-        for ($j = 0; $j < 5; $j++) {
+        for ($j = 0; $j < 3; $j++) {
             if (Illumina::CompareIlluminaHashes($keys[$j], $requestKey)) {
-                return $next($request);
+                return true;
             }
         }
+        return false;
+    }
+
+    public function handle($request, Closure $next)
+    {
+        if (CheckGetTimeUrl::CheckUniqueKey($request)) {
+            return $next($request);
+        }
         return redirect('/')->withException(InvalidArgumentException);
-        // if ($requestKey == $key1 || $requestKey == $key2) {
-        //     return $next($request);
-        // } else {
-        //     return redirect('/')->withException(InvalidArgumentException);
-        // }
-        //
     }
 }
