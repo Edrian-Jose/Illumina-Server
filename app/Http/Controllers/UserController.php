@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Middleware\Illumina;
 use App\Http\Middleware\CheckGetTimeUrl;
 
@@ -96,7 +97,32 @@ class UserController extends Controller
         if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
             $user->logged_in = true;
             $user->save();
-            return $user;
+            $request["response_message"] = "Succesfully Logged in";
+            $request["name"] = $user->name;
+            $request["email"] = $user->email;
+        } else {
+            $request["response_message"] = "Username/password incorrect";
+        }
+
+        return $request;
+    }
+
+
+    public function logout(Request $request)
+    {
+        $user = User::where("username", $request["username"])->first();
+
+        if ($user == null) {
+            $request["response_message"] = "Username doesn't exist";
+        }
+
+        $password = $user->password;
+        if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
+            $user->logged_in = false;
+            $user->save();
+            $request["username"] = "";
+            $request["password"] = "";
+            $request["response_message"] = "Succesfully Logged out";
         } else {
             $request["response_message"] = "Username/password incorrect";
         }
@@ -129,6 +155,22 @@ class UserController extends Controller
         return redirect('/')->withException(InvalidArgumentException);
     }
 
+    public function verify(Request $request)
+    {
+        if (CheckGetTimeUrl::CheckUniqueKey($request)) {
+            $data = [
+                'name' => $request["name"],
+                'code' => $request["code"],
+            ];
+
+            Mail::send('emails.verify', $data, function ($message) use ($request) {
+                $message->to($request["email"], $request["name"])->subject('Verify your email');
+            });
+
+            return $request;
+        }
+        return redirect('/')->withException(InvalidArgumentException);
+    }
     /**
      * Remove the specified resource from storage.
      *
