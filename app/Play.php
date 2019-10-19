@@ -9,7 +9,7 @@ class Play extends Model
     //
     public function players()
     {
-        return $this->belongsToMany('App\Player', 'scores', 'play_id', 'player_id');
+        return $this->belongsToMany('App\User', 'scores', 'play_id', 'player_id');
     }
 
     public function scores()

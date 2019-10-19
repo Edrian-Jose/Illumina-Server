@@ -19,7 +19,8 @@ class CreateLobbiesTable extends Migration
             $table->bigInteger('hostid');
             //hostid must be unique
             $table->json('users');
-            $table->integer('readyplayers');
+            $table->json('userstatus');
+            $table->integer('readyplayers')->default(0);
             $table->timestamps();
         });
     }

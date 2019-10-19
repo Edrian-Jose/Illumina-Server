@@ -171,6 +171,22 @@ class UserController extends Controller
         }
         return redirect('/')->withException(InvalidArgumentException);
     }
+
+    public function verifypassword(Request $request)
+    {
+        $user = User::where("username", $request["username"])->first();
+        $password = $user->password;
+        if ($user == null) {
+            $request["response_code"] = '2';
+            return $request;
+        }
+        if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
+            $request["response_code"] = '0';
+        } else {
+            $request["response_code"] = '1';
+        }
+        return $request;
+    }
     /**
      * Remove the specified resource from storage.
      *
