@@ -31,18 +31,14 @@ Route::get('/token',  function () {
 });
 
 
-Route::get('/test', ['middleware' => ['checkgetquery'], function (Request $request) {
-    return $request->all();
-}]);
+
 
 
 Route::put('/user/login', 'UserController@login');
 Route::get('/user/exists/{key}', 'UserController@exists');
 Route::post('/user/verifyemail/{key}',  'UserController@verify');
 Route::put('/user/logout',  'UserController@logout');
+Route::put('/user/forgotPass',  'UserController@forgotPassword');
 Route::resource('user', 'UserController');
-
-Route::post('/test', function (Request $request) {
-    $request["response_message"] = "Hello";
-    return $request;
-});
+Route::post('/lobby/register', 'LobbyController@register');
+Route::post('/lobby/update', 'LobbyController@updatelobby');
