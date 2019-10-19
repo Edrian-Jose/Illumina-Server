@@ -16,7 +16,7 @@ class CreateLobbiesTable extends Migration
         Schema::create('lobbies', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('status');
-            $table->bigIncrements('hostid');
+            $table->bigInteger('hostid');
             //hostid must be unique
             $table->json('users');
             $table->integer('readyplayers');
