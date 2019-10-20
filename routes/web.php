@@ -40,6 +40,7 @@ Route::post('/user/verifyemail/{key}',  'UserController@verify');
 Route::put('/user/logout',  'UserController@logout');
 Route::put('/user/forgotPass',  'UserController@forgotPassword');
 Route::post('/user/verifyPass',  'UserController@verifypassword');
+Route::post('/user/editaccount',  'UserController@editaccount');
 Route::resource('user', 'UserController');
 Route::post('/lobby/register', 'LobbyController@register');
 Route::post('/lobby/update', 'LobbyController@updatelobby');

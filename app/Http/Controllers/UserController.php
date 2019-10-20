@@ -43,9 +43,11 @@ class UserController extends Controller
         if ($request->has("username") && $request->has("password") && $request->has("name") && $request->has("email")) {
             User::create($request->all());
             $request["response_message"] = "You are now registered " . $request["name"];
+            $request["response_code"] = '0';
             return $request;
         } else {
             $request["response_message"] = "Incomplete information, cannot register";
+            $request["response_code"] = '1';
             return $request;
         }
     }
@@ -91,17 +93,21 @@ class UserController extends Controller
 
         if ($user == null) {
             $request["response_message"] = "Username doesn't exist";
+            $request["response_code"] = '2';
         }
 
         $password = $user->password;
         if (Illumina::CompareIlluminaHashes($password, $request["password"])) {
             $user->logged_in = true;
             $user->save();
-            $request["response_message"] = "Succesfully Logged in";
+
             $request["name"] = $user->name;
             $request["email"] = $user->email;
+            $request["response_message"] = "Succesfully Logged in";
+            $request["response_code"] = '0';
         } else {
             $request["response_message"] = "Username/password incorrect";
+            $request["response_code"] = '1';
         }
 
         return $request;
@@ -185,6 +191,30 @@ class UserController extends Controller
         } else {
             $request["response_code"] = '1';
         }
+        return $request;
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $user = User::where("email", $request["email"])->first();
+        if ($user != null) {
+            $key = "reset";
+            $user->password = Illumina::GenerateIlluminaHash($key);
+            //TODO: must send an email here to give the new password
+            $user->save();
+        }
+        return $request;
+    }
+
+    public function editaccount(Request $request)
+    {
+        $user = User::where("username", $request["username"])->first();
+        $user->name = $request["name"];
+        $user->password = $request["password"];
+        $user->email = $request["email"];
+        $user->profile = $request["profile"];
+        $user->save();
+        $request["response_message"] = $user->username . " account edit successfull";
         return $request;
     }
     /**
