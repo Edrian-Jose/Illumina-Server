@@ -19,7 +19,7 @@ class CreatePlayRoomsTable extends Migration
             $table->bigInteger('hostid');
             $table->string('host');
             $table->integer('turn');
-            $table->json('users');
+            $table->json('players');
             $table->json('data')->default(null);
             $table->timestamps();
         });
