@@ -45,3 +45,6 @@ Route::resource('user', 'UserController');
 Route::post('/lobby/register', 'LobbyController@register');
 Route::post('/lobby/update', 'LobbyController@updatelobby');
 Route::put('/lobby/statuscheck', 'LobbyController@statuscheck');
+Route::put('/lobby/ready', 'LobbyController@ready');
+Route::post('/lobby/createplay', 'LobbyController@createplay');
+Route::post('/lobby/waitplay', 'LobbyController@waitplay');

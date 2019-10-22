@@ -4,24 +4,21 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLobbiesTable extends Migration
+class CreatePlayRoomsTable extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
-     *
      */
     public function up()
     {
-        Schema::create('lobbies', function (Blueprint $table) {
+        Schema::create('play_rooms', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('status');
             $table->bigInteger('hostid');
-            $table->string('host');
+            $table->integer('turn');
             $table->json('users');
-            $table->json('userstatus');
-            $table->integer('readyplayers')->default(0);
+            $table->json('data')->default(null);
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreateLobbiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('lobbies');
+        Schema::dropIfExists('play_rooms');
     }
 }

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Lobby extends Model
+class PlayRoom extends Model
 {
     protected $fillable = [
-        'status', 'hostid', 'host', 'users', 'readyplayers', 'userstatus'
+        'hostid', 'users', 'turn', 'users', 'data'
     ];
 }
