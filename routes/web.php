@@ -48,3 +48,5 @@ Route::put('/lobby/statuscheck', 'LobbyController@statuscheck');
 Route::put('/lobby/ready', 'LobbyController@ready');
 Route::post('/lobby/createplay', 'LobbyController@createplay');
 Route::post('/lobby/waitplay', 'LobbyController@waitplay');
+Route::post('/play/savedata', 'PlayController@savedata');
+Route::post('/play/loaddata', 'PlayyController@loaddata');

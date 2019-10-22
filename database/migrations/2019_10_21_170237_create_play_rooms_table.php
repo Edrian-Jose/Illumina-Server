@@ -15,7 +15,9 @@ class CreatePlayRoomsTable extends Migration
     {
         Schema::create('play_rooms', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('status')->default(0);
             $table->bigInteger('hostid');
+            $table->string('host');
             $table->integer('turn');
             $table->json('users');
             $table->json('data')->default(null);

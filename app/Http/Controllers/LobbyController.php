@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Lobby;
 use App\LobbyRoom;
+use App\PlayRoom;
 
 class LobbyController extends Controller
 {
@@ -160,11 +161,13 @@ class LobbyController extends Controller
             $players[$key] = $value;
         }
         $turn = 0;
-        $room['hostid'] = $request['hostid'];
+        $room['host'] = $request['host'];
+        $host = User::where('username', $room['host'])->first();
+        $room['hostid'] = $host->id;
         $room['turn'] = $turn;
         $room['players'] = json_encode($players);
         $room['data'] = json_encode($request['data']);
-        LobbyRoom::create($room);
+        PlayRoom::create($room);
         //$lobby->delete();
         return $room;
     }
@@ -172,7 +175,7 @@ class LobbyController extends Controller
     {
         $hostid = $request['hostid'];
         do {
-            $room = LobbyRoom::where('hostid', $request[$hostid])->first();
+            $room = PlayRoom::where('hostid', $request[$hostid])->first();
             usleep(250000);
         } while ($room == null);
         return $room;
